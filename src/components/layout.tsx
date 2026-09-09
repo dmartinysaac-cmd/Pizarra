@@ -38,6 +38,7 @@ function Ticker() {
 /* ---------- navegación ---------- */
 const NAV_LINKS = [
   { to: "/", label: "Inicio" },
+  { to: "/en-vivo", label: "En vivo" },
   { to: "/partidos", label: "Partidos del día" },
   { to: "/valor", label: "Valor" },
   { to: "/metodologia", label: "Metodología" },
@@ -225,6 +226,7 @@ function Footer() {
         <div>
           <p className="stamp mb-4 text-pitch-400">Plataforma</p>
           <ul className="space-y-2.5 text-[13px] text-mist-400">
+            <li><Link className="transition-colors hover:text-pitch-300" to="/en-vivo">En vivo</Link></li>
             <li><Link className="transition-colors hover:text-pitch-300" to="/partidos">Partidos del día</Link></li>
             <li><Link className="transition-colors hover:text-pitch-300" to="/valor">Mejores oportunidades</Link></li>
             <li><Link className="transition-colors hover:text-pitch-300" to="/metodologia">Metodología del modelo</Link></li>
