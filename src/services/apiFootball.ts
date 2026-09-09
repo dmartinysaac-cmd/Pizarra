@@ -1,6 +1,5 @@
 /**
- * API-Football (api-sports.io)
- * Docs: https://www.api-football.com/documentation-v3
+ * API-Football (api-sports / RapidAPI)
  * Free tier: 100 requests/day
  */
 
@@ -30,22 +29,18 @@ function formatTime(dateStr: string): string {
 
 export async function fetchMatchesFromApiFootball(
   apiKey: string,
-  leagueIds: number[] = [140, 39, 2, 135, 78]
+  leagueIds: number[] = [140, 39, 2, 78, 135] // LaLiga, Premier, UCL, Bundesliga, Serie A
 ): Promise<LiveMatch[]> {
   if (!apiKey) {
-    throw new Error("Falta la API key de API-Football. Añádela en .env como VITE_API_FOOTBALL_KEY");
+    throw new Error("Falta la API key de API-Football");
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  const end = new Date();
-  end.setDate(end.getDate() + 3);
-  const to = end.toISOString().slice(0, 10);
-
   const all: LiveMatch[] = [];
 
   for (const leagueId of leagueIds) {
     try {
-      const url = `${BASE}/fixtures?league=${leagueId}&season=2025&from=${today}&to=${to}&timezone=Europe/Madrid`;
+      const url = `${BASE}/fixtures?league=${leagueId}&season=2025&date=${today}&timezone=Europe/Madrid`;
 
       const res = await fetch(url, {
         headers: {
@@ -89,13 +84,13 @@ export async function fetchMatchesFromApiFootball(
           status: statusMap[f.fixture.status?.short] || "SCHEDULED",
           home: {
             name: f.teams.home.name,
-            short: f.teams.home.name.slice(0, 14),
+            short: f.teams.home.name.slice(0, 12),
             code: f.teams.home.name.slice(0, 3).toUpperCase(),
             crest: f.teams.home.logo,
           },
           away: {
             name: f.teams.away.name,
-            short: f.teams.away.name.slice(0, 14),
+            short: f.teams.away.name.slice(0, 12),
             code: f.teams.away.name.slice(0, 3).toUpperCase(),
             crest: f.teams.away.logo,
           },
@@ -114,10 +109,5 @@ export async function fetchMatchesFromApiFootball(
     }
   }
 
-  return all.sort((a, b) => {
-    const liveA = a.status === "LIVE" || a.status === "IN_PLAY" || a.status === "PAUSED" ? 0 : 1;
-    const liveB = b.status === "LIVE" || b.status === "IN_PLAY" || b.status === "PAUSED" ? 0 : 1;
-    if (liveA !== liveB) return liveA - liveB;
-    return a.time.localeCompare(b.time);
-  });
+  return all;
 }

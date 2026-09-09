@@ -2,7 +2,6 @@
  * football-data.org service
  * Docs: https://www.football-data.org/documentation/quickstart
  * Free tier: 10 requests/minute
- * Get your free token at: https://www.football-data.org/client/register
  */
 
 import type { LiveMatch } from "./types";
@@ -40,10 +39,10 @@ function formatTime(utcDate: string): string {
 
 export async function fetchMatchesFromFootballData(
   token: string,
-  competitionCodes: string[] = ["PL", "PD", "CL"]
+  competitionCodes: string[] = ["PL", "PD", "CL", "BL1", "SA"]
 ): Promise<LiveMatch[]> {
   if (!token) {
-    throw new Error("Falta el token de football-data.org. Añádelo en .env como VITE_FOOTBALL_DATA_TOKEN");
+    throw new Error("Falta el token de football-data.org");
   }
 
   const all: LiveMatch[] = [];
@@ -51,10 +50,8 @@ export async function fetchMatchesFromFootballData(
   for (const code of competitionCodes) {
     try {
       const res = await fetch(
-        `${BASE}/competitions/${code}/matches?status=SCHEDULED,LIVE,IN_PLAY,FINISHED&limit=12`,
-        {
-          headers: { "X-Auth-Token": token },
-        }
+        `${BASE}/competitions/${code}/matches?status=SCHEDULED,LIVE,IN_PLAY,FINISHED&limit=15`,
+        { headers: { "X-Auth-Token": token } }
       );
 
       if (!res.ok) {
@@ -74,19 +71,21 @@ export async function fetchMatchesFromFootballData(
         status: m.status,
         home: {
           name: m.homeTeam?.name || "Local",
-          short: m.homeTeam?.shortName || m.homeTeam?.name?.slice(0, 10) || "LOC",
+          short: m.homeTeam?.shortName || m.homeTeam?.name?.slice(0, 12) || "LOC",
           code: m.homeTeam?.tla || "LOC",
           crest: m.homeTeam?.crest,
         },
         away: {
           name: m.awayTeam?.name || "Visitante",
-          short: m.awayTeam?.shortName || m.awayTeam?.name?.slice(0, 10) || "VIS",
+          short: m.awayTeam?.shortName || m.awayTeam?.name?.slice(0, 12) || "VIS",
           code: m.awayTeam?.tla || "VIS",
           crest: m.awayTeam?.crest,
         },
         score:
           m.score?.fullTime?.home != null
             ? { home: m.score.fullTime.home, away: m.score.fullTime.away }
+            : m.score?.halfTime?.home != null
+            ? { home: m.score.halfTime.home, away: m.score.halfTime.away }
             : undefined,
         minute: m.minute,
         source: "football-data",
@@ -102,6 +101,6 @@ export async function fetchMatchesFromFootballData(
     const liveA = a.status === "LIVE" || a.status === "IN_PLAY" ? 0 : 1;
     const liveB = b.status === "LIVE" || b.status === "IN_PLAY" ? 0 : 1;
     if (liveA !== liveB) return liveA - liveB;
-    return a.dateLabel.localeCompare(b.dateLabel);
+    return a.time.localeCompare(b.time);
   });
 }
