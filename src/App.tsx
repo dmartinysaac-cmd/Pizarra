@@ -10,6 +10,7 @@ import Methodology from "./pages/Methodology";
 import Pricing from "./pages/Pricing";
 import AuthPage from "./pages/AuthPage";
 import Legal from "./pages/Legal";
+import Live from "./pages/Live";
 
 function NotFound() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/partidos" element={<Matches />} />
             <Route path="/partido/:id" element={<MatchDetail />} />
+            <Route path="/en-vivo" element={<Live />} />
             <Route path="/panel" element={<Dashboard />} />
             <Route path="/valor" element={<Value />} />
             <Route path="/metodologia" element={<Methodology />} />
