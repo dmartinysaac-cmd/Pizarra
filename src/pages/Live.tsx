@@ -75,7 +75,6 @@ export default function Live() {
           }
         />
 
-        {/* Selector de fuente */}
         <Reveal>
           <div className="mb-6 flex flex-wrap items-center gap-3">
             <button
@@ -174,7 +173,7 @@ export default function Live() {
                           <img src={m.away.crest} alt="" className="h-9 w-9 object-contain" />
                         )}
                         <div>
-                          <p className="font-display text-lg font-boldbold uppercase tracking-wide text-mist-100 sm:text-xl">{m.away.short}</p>
+                          <p className="font-display text-lg font-bold uppercase tracking-wide text-mist-100 sm:text-xl">{m.away.short}</p>
                           <p className="stamp text-mist-500">{m.away.code}</p>
                         </div>
                       </div>
